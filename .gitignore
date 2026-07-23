@@ -1,0 +1,26 @@
+# compiled output
+**/dist
+**/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+.claude
+
+# IDEs and editors
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Local environment files. Копируются из .env.example и в репозиторий не попадают.
+.env
+**/.env
+!**/.env.example

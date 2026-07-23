@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+
+  redis:
+    image: redis:7-alpine
+    # Redis поднят с паролем — клиент обязан его передавать.
+    command: ["redis-server", "--requirepass", "secret"]
+
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      PORT: 3000
+      ENV_FILE: /app/host/.env # откуда бэкенд читает .env на лету
+    ports:
+      - "8080:3000" # дашборд и API на http://localhost:8080
+    volumes:
+      - ./backend/src:/app/src
+      - ./frontend:/app/public
+      - ./:/app/host:ro
+    depends_on:
+      - postgres
+      - redis

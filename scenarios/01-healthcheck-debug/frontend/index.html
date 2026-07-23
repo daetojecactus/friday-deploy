@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Dashboard</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f1117;
+        --bg-elevated: #161923;
+        --card: #1a1d27;
+        --card-hover: #1f2330;
+        --border: #2a2e3a;
+        --text: #e6e8ee;
+        --muted: #8a90a2;
+        --green: #2ecc71;
+        --red: #e74c3c;
+        --radius: 12px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        background:
+          radial-gradient(
+            1200px 600px at 100% -10%,
+            rgba(46, 204, 113, 0.06),
+            transparent 60%
+          ),
+          var(--bg);
+        color: var(--text);
+        padding: 32px 24px;
+      }
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+      header {
+        margin-bottom: 24px;
+      }
+      .title-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0;
+        letter-spacing: 0.2px;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .progress {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .count {
+        font-size: 15px;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .count b {
+        font-size: 24px;
+      }
+      .count b.green {
+        color: var(--green);
+      }
+      .count b.red {
+        color: var(--red);
+      }
+      .bar {
+        flex: 1;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--border);
+        overflow: hidden;
+        min-width: 160px;
+      }
+      .bar-fill {
+        height: 100%;
+        width: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #27ae60, var(--green));
+        transition: width 0.4s ease;
+      }
+      #grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        position: relative;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px 16px 20px;
+        overflow: hidden;
+        transition:
+          background 0.2s ease,
+          border-color 0.3s ease;
+      }
+      .card:hover {
+        background: var(--card-hover);
+      }
+      /* Цветная полоса статуса слева */
+      .card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--green);
+        transition: background 0.3s ease;
+      }
+      .card.red::before {
+        background: var(--red);
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        flex: 0 0 auto;
+        transition: background 0.3s ease;
+      }
+      .dot.green {
+        background: var(--green);
+        box-shadow: 0 0 8px var(--green);
+      }
+      .dot.red {
+        background: var(--red);
+        box-shadow: 0 0 8px var(--red);
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(231, 76, 60, 0);
+        }
+      }
+      .name {
+        font-weight: 600;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .error {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+        word-break: break-word;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .dot.red {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="title-row">
+          <h1>Health Dashboard</h1>
+          <span class="meta" id="meta"></span>
+        </div>
+        <div class="progress">
+          <span class="count" id="count"></span>
+          <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+        </div>
+      </header>
+      <div id="grid"></div>
+    </div>
+
+    <script>
+      const grid = document.getElementById("grid");
+      const meta = document.getElementById("meta");
+      const count = document.getElementById("count");
+      const barFill = document.getElementById("barFill");
+
+      async function poll() {
+        try {
+          const response = await fetch("/api/checks");
+          const checks = await response.json();
+          render(checks);
+          updateProgress(checks);
+          meta.textContent = "обновлено " + new Date().toLocaleTimeString();
+        } catch (error) {
+          meta.textContent = "нет связи с бэкендом: " + error.message;
+        }
+      }
+
+      function updateProgress(checks) {
+        const greenCount = checks.filter(
+          (check) => check.status === "green",
+        ).length;
+        const total = checks.length;
+        const allGreen = greenCount === total;
+        count.innerHTML = `<b class="${allGreen ? "green" : "red"}">${greenCount}</b> / ${total} работают`;
+        barFill.style.width = total ? `${(greenCount / total) * 100}%` : "0";
+      }
+
+      function render(checks) {
+        grid.innerHTML = checks
+          .map(
+            (check) => `
+          <div class="card ${check.status}">
+            <div class="row">
+              <span class="dot ${check.status}"></span>
+              <span class="name">${check.name}</span>
+            </div>
+            ${check.error ? `<div class="error">${escapeHtml(check.error)}</div>` : ""}
+          </div>`,
+          )
+          .join("");
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(
+          /[&<>"]/g,
+          (character) =>
+            ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[
+              character
+            ],
+        );
+      }
+
+      poll();
+      setInterval(poll, 3000); // автообновление раз в 3 секунды
+    </script>
+  </body>
+</html>
