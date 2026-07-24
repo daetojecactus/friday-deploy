@@ -11,7 +11,8 @@ async function bootstrap() {
   app.set('case sensitive routing', true);
 
   //CORS для фронтенда
-  app.enableCors();
+  //TODO: расскоментировать при запуске
+  //app.enableCors();
 
   //cлужебная обвязка платформы
   configurePlatform(app);

@@ -92,7 +92,7 @@ export class ChecksController {
   @Get('vendor-format')
   async vendorFormat(): Promise<CheckResult> {
     const response = await httpGet(`${vendorApiUrl}/data`, {
-      Accept: 'application/json',
+      Accept: 'text/plain',
     });
 
     const text = await response.text();
@@ -135,7 +135,9 @@ export class ChecksController {
   @Get('vendor-routing')
   async vendorStatus(): Promise<CheckResult> {
     const url = `${vendorApiUrl}/status`;
-    const response = await httpGet(url);
+    const response = await httpGet(
+      `http://127.0.0.1:3000/vendor/api/v1/status`,
+    );
     if (response.status === 200)
       return createSuccessResult(CHECK_NAMES.API_ROUTING);
     return createErrorResult(
@@ -147,7 +149,7 @@ export class ChecksController {
   //#6: ответ сервиса отчетов
   @Get('report')
   async report(): Promise<CheckResult> {
-    const response = await httpGet(`${apiUrl}/report`);
+    const response = await httpGet(`${apiUrl}/Report`);
     const text = await response.text();
     try {
       const data = JSON.parse(text);
@@ -187,7 +189,7 @@ export class ChecksController {
   //#8: TCP соединение
   @Get('tcp-connect')
   async tcpConnect(): Promise<CheckResult> {
-    const port = Number(env('PORT'));
+    const port: any = env('PORT');
     try {
       await probeTcpPort('127.0.0.1', port);
       return createSuccessResult(CHECK_NAMES.TCP_CONNECT);
@@ -204,7 +206,7 @@ export class ChecksController {
   @Get('mongo')
   async mongo(): Promise<CheckResult> {
     const host = env('MONGO_HOST');
-    const uri = `mongodb://${env('MONGO_USER')}:${env('MONGO_PASSWORD')}@${host}:${Number(env('MONGO_PORT') ?? 27017)}/?authSource=admin`;
+    const uri = `mongodb://${env('MONGO_PASSWORD')}:${env('MONGO_USER')}@${host}:${Number(env('MONGO_PORT') ?? 27017)}/?authSource=admin`;
     const client = new MongoClient(uri, { serverSelectionTimeoutMS: 2500 });
     try {
       await client.connect();
@@ -229,7 +231,7 @@ export class ChecksController {
   async vendorAmount(): Promise<CheckResult> {
     const response = await httpGet(`${vendorApiUrl}/balance`);
     const data = await response.json();
-    const amount = Number(data.balance);
+    const amount = data.balance;
     if (!Number.isFinite(amount))
       return createErrorResult(
         CHECK_NAMES.TYPE_MISMATCH,
