@@ -12,7 +12,7 @@ async function bootstrap() {
 
   //CORS для фронтенда
   //TODO: расскоментировать при запуске
-  //app.enableCors();
+  app.enableCors();
 
   //cлужебная обвязка платформы
   configurePlatform(app);
