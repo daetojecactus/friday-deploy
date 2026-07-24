@@ -8,13 +8,11 @@ services:
 
   redis:
     image: redis:7-alpine
-    # Redis поднят с паролем — клиент обязан его передавать.
+    #Redis поднят с паролем
     command: ["redis-server", "--requirepass", "secret"]
 
   mongo:
     image: mongo:7
-    # MongoDB поднята с root-пользователем — клиент обязан передавать его учетные
-    # данные (см. MONGO_USER / MONGO_PASSWORD в .env, authSource=admin).
     environment:
       MONGO_INITDB_ROOT_USERNAME: app
       MONGO_INITDB_ROOT_PASSWORD: secret
@@ -24,9 +22,9 @@ services:
     env_file: .env
     environment:
       PORT: 3000
-      ENV_FILE: /app/host/.env # откуда бэкенд читает .env на лету
+      ENV_FILE: /app/host/.env
     ports:
-      - "8080:3000" # дашборд и API на http://localhost:8080
+      - "8080:3000"
     volumes:
       - ./backend/src:/app/src
       - ./frontend:/app/public

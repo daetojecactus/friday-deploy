@@ -78,7 +78,7 @@ scenarios/01-healthcheck-debug/
 │     ├─ controllers/            # имитации внешних систем + агрегатор
 │     ├─ checks/                 # CheckResult, CHECK_NAMES, MESSAGES
 │     └─ lib/                    # env, http, net (TCP-проба)
-├─ README.md / RULES.md / SABOTAGE.md / CONTEXT.md
+├─ GUIDE.md / README.md / RULES.md / SABOTAGE.md / CONTEXT.md
 ```
 
 ---
