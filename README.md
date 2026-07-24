@@ -13,7 +13,7 @@
 
 | #   | Папка                                                              | Тема                                                 | Стек              |
 | --- | ----------------------------------------------------------------- | ---------------------------------------------------- | ----------------- |
-| 01  | [`scenarios/01-healthcheck-debug/`](scenarios/01-healthcheck-debug/) | Дашборд из 10 healthcheck'ов — сделать все зелёными | NestJS + PG + Redis |
+| 01  | [`scenarios/01-healthcheck-debug/`](scenarios/01-healthcheck-debug/) | Дашборд из 10 healthcheck'ов — сделать все зелёными | NestJS + PG + Redis + Mongo |
 
 Новые сценарии добавляются как отдельные папки в `scenarios/` с собственным
 `README.md` и `docker-compose.yml`. Стек может быть любым (Node, Python и т.д.) —

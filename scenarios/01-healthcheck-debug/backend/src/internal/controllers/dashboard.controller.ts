@@ -10,7 +10,7 @@ const apiUrl = process.env.API_URL;
 
 // Порядок = порядок карточек на дашборде.
 const CHECK_SLUGS = [
-  'db',
+  'postgres',
   'redis',
   'vendor-format',
   'vendor-auth',

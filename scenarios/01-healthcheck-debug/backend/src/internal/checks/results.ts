@@ -14,7 +14,7 @@ export type CheckResult = {
 // Имена проверок (совпадают с карточками дашборда). Держим в одном месте, чтобы
 // не плодить магические строки в каждом эндпоинте.
 export const CHECK_NAMES = {
-  DB_CONNECTION: 'db_connection',
+  POSTGRES_CONNECTION: 'postgres_connection',
   REDIS_PING: 'redis_ping',
   VENDOR_API_HEADERS: 'vendor_api_headers',
   VENDOR_AUTH_SCHEME: 'vendor_auth_scheme',

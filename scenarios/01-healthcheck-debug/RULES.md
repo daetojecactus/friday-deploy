@@ -32,7 +32,7 @@
 curl -s http://localhost:8080/api/checks
 
 # Конкретная проверка
-curl -s http://localhost:8080/api/checks/db
+curl -s http://localhost:8080/api/checks/postgres
 curl -s http://localhost:8080/api/checks/vendor-auth
 
 # Имитации внешних систем

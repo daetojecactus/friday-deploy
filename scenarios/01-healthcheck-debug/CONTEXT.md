@@ -107,7 +107,7 @@ scenarios/01-healthcheck-debug/
 
 | #   | Проверка (slug)               | Что делает                                                                                       | Где фикс |
 | --- | ----------------------------- | ------------------------------------------------------------------------------------------------ | -------- |
-| 1   | `db_connection` (`db`)        | Коннект к PostgreSQL и `SELECT 1` по `POSTGRES_*` из `.env`.                                      | `.env`   |
+| 1   | `postgres_connection` (`postgres`) | Коннект к PostgreSQL и `SELECT 1` по `POSTGRES_*` из `.env`.                                | `.env`   |
 | 2   | `redis_ping` (`redis`)        | Коннект к Redis и `PING` (ждет `PONG`). Redis поднят с паролем.                                   | `.env`   |
 | 3   | `vendor_api_headers` (`vendor-format`) | GET вендора `/data` с `Accept: application/json` и разбор JSON. Без заголовка вендор отдает текст. | `src`    |
 | 4   | `vendor_auth_scheme` (`vendor-auth`)   | GET вендора `/profile` с `Authorization: Bearer <token>`. Вендор принимает только схему `Bearer`. | `src`    |
@@ -115,11 +115,15 @@ scenarios/01-healthcheck-debug/
 | 6   | `response_format` (`report`)  | GET своего `/api/report`, ждет `{ status: "ok" }`. Роутинг регистрозависимый — опечатка дает 404. | `src`    |
 | 7   | `cors_headers` (`cors`)       | GET своего `/api/cors-check` с `Origin`, ждет `Access-Control-Allow-Origin` (включается в `main.ts`). | `src` |
 | 8   | `tcp_connect` (`tcp-connect`) | Читает `PORT` из `.env`, приводит к числу и делает TCP-подключение к порту самого приложения (`127.0.0.1:PORT`). Без `Number()` порт остается строкой → `TypeError` (проверка типа порта). | `src` |
-| 9   | `mongo_connection` (`mongo`)  | Коннект к MongoDB по `MONGO_*` из `.env` и `ping` базы `admin` (`authSource=admin`). Неверные креды → ошибка авторизации, неверный хост → нет соединения. | `.env` |
+| 9   | `mongo_connection` (`mongo`)  | Коннект к MongoDB по `MONGO_*` из `.env` и `ping` базы `admin` (`authSource=admin`). Перепутанные логин/пароль → ошибка авторизации, неверный хост → нет соединения. | `.env` |
 | 10  | `type_mismatch` (`vendor-amount`)      | GET вендора `/balance`; поле `balance` приходит строкой, приложение ждет число — нужен `Number()`. | `src`    |
 
 Полный HTTP-путь проверки: `/api/checks/<slug>` (например,
 `/api/checks/vendor-format`).
+
+Чему учит каждый чек и чем похожие симптомы отличаются друг от друга (контент
+против типа, заголовок запроса против ответа, версия против пути, сеть против
+авторизации) — разобрано в [SABOTAGE.md](SABOTAGE.md#чему-учит-каждый-чек-шпаргалка-для-ведущего).
 
 ---
 
@@ -156,7 +160,7 @@ docker-compose up --build
 curl -s http://localhost:8080/api/checks
 
 # Конкретная проверка
-curl -s http://localhost:8080/api/checks/db
+curl -s http://localhost:8080/api/checks/postgres
 curl -s http://localhost:8080/api/checks/mongo
 
 # Имитации внешних систем (не чинятся)

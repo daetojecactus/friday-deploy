@@ -7,10 +7,10 @@
 // логам и данным. Все тексты — на английском, как реальные ошибки сервисов.
 
 export const MESSAGES = {
-  db: {
+  postgres: {
     unreachable: (host: string | undefined, detail: unknown) =>
-      `data store did not accept the connection (host=${host}): ${detail}`,
-    closeFailed: '[db] failed to close data store connection',
+      `relational store did not accept the connection (host=${host}): ${detail}`,
+    closeFailed: '[postgres] failed to close relational store connection',
   },
   redis: {
     unexpectedReply: (reply: string) =>

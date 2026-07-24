@@ -19,8 +19,8 @@ const vendorApiUrl = process.env.VENDOR_API_URL;
 @Controller('checks')
 export class ChecksController {
   //#1: коннект к PostgreSQL
-  @Get('db')
-  async db(): Promise<CheckResult> {
+  @Get('postgres')
+  async postgres(): Promise<CheckResult> {
     const host = env('POSTGRES_HOST');
     const client = new Client({
       host,
@@ -33,17 +33,17 @@ export class ChecksController {
     try {
       await client.connect();
       await client.query('SELECT 1');
-      return createSuccessResult(CHECK_NAMES.DB_CONNECTION);
+      return createSuccessResult(CHECK_NAMES.POSTGRES_CONNECTION);
     } catch (error: any) {
       return createErrorResult(
-        CHECK_NAMES.DB_CONNECTION,
-        MESSAGES.db.unreachable(host, error.message || error.code || error),
+        CHECK_NAMES.POSTGRES_CONNECTION,
+        MESSAGES.postgres.unreachable(host, error.message || error.code || error),
       );
     } finally {
       try {
         await client.end();
       } catch (closeError) {
-        console.error(MESSAGES.db.closeFailed, closeError);
+        console.error(MESSAGES.postgres.closeFailed, closeError);
       }
     }
   }
