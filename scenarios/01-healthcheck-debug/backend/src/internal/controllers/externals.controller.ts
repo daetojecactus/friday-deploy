@@ -1,7 +1,6 @@
-import { Controller, Get, HttpException } from '@nestjs/common';
-import { hitRateLimit } from '../lib/limiter';
+import { Controller, Get } from '@nestjs/common';
 
-// ⚠️ Имитация прочих ВНЕШНИХ систем (сервис отчетов, CORS-эндпоинт, лимитер).
+// Имитация прочих ВНЕШНИХ систем (сервис отчетов, CORS-эндпоинт).
 // Это «чужие» сервисы — их не чинят. Все баги правятся на нашей стороне.
 
 @Controller()
@@ -15,14 +14,6 @@ export class ExternalsController {
   // Эндпоинт для проверки CORS.
   @Get('cors-check')
   corsCheck() {
-    return { ok: true };
-  }
-
-  // Эндпоинт под rate limiter'ом.
-  @Get('limited')
-  async limited() {
-    if (!(await hitRateLimit('rl:limited')))
-      throw new HttpException('rate limited', 429);
     return { ok: true };
   }
 }

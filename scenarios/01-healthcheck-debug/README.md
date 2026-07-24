@@ -10,7 +10,7 @@
 ## Стек
 
 - **Backend** — NestJS (TypeScript), REST. Отдает фронтенд и имитирует внешние системы.
-- **Инфраструктура** — Docker Compose: backend + PostgreSQL + Redis (3 контейнера).
+- **Инфраструктура** — Docker Compose: backend + PostgreSQL + Redis + MongoDB (4 контейнера).
 - **Frontend** — одна HTML-страница на чистом JS, поллинг `/api/checks` раз в 3 секунды.
 
 ## Быстрый старт
@@ -26,7 +26,7 @@ docker-compose up --build
 
 ```
 .
-├─ docker-compose.yml             # 3 сервиса: backend, postgres, redis
+├─ docker-compose.yml             # 4 сервиса: backend, postgres, redis, mongo
 ├─ .env.example                   # эталонный конфиг (копируется в .env)
 ├─ .env                           # локальный конфиг (в репозиторий не попадает)
 ├─ frontend/index.html            # дашборд (vanilla JS, поллинг раз в 3с)
@@ -36,10 +36,10 @@ docker-compose up --build
 │  ├─ app.module.ts               # регистрация контроллеров
 │  └─ internal/                   # служебный код стенда — при отладке не нужен
 │     ├─ index.ts                 # публичная точка входа для checks.controller
-│     ├─ config.ts                # адреса: APP_PORT, HOST_URL, vendorUrl()
 │     ├─ controllers/             # имитации внешних систем + агрегатор
 │     ├─ checks/                  # CheckResult, CHECK_NAMES, MESSAGES
-│     └─ lib/                     # env, http, net, limiter
+│     └─ lib/                     # env, http, net
+├─ CONTEXT.md                     # полный контекст стенда (архитектура, проверки)
 ├─ RULES.md                       # правила урока и диагностические команды
 └─ SABOTAGE.md                    # плейбук ведущего
 ```
@@ -65,8 +65,8 @@ docker-compose up --build
 | 5   | `api_routing`        | Вендор отвечает 404 (захардкожена версия URL) | `src`    |
 | 6   | `response_format`    | Опечатка в пути → 404 вместо JSON            | `src`    |
 | 7   | `cors_headers`       | Нет CORS-заголовков в ответе                 | `src`    |
-| 8   | `config_parsing`     | Порт из `.env` не приведен к числу (TypeError) | `src`  |
-| 9   | `rate_limiter`       | 429 — домино после починки Redis (№2)        | `.env`   |
+| 8   | `tcp_connect`        | Порт приложения из `.env` не приведен к числу (TypeError) | `src` |
+| 9   | `mongo_connection`   | Нет коннекта к MongoDB (неверные креды/хост) | `.env`   |
 | 10  | `type_mismatch`      | Баланс вендора приходит строкой, а не числом | `src`    |
 
 ## Правила (кратко)
@@ -76,7 +76,9 @@ docker-compose up --build
 3. Правим только `backend/src/checks.controller.ts` и `.env`. Инфраструктуру — с
    согласия команды.
 
-Полные правила и диагностические команды — в [RULES.md](RULES.md).
+Полные правила и диагностические команды — в [RULES.md](RULES.md). Полный контекст
+стенда (архитектура, назначение проверок, цепочки домино) — в
+[CONTEXT.md](CONTEXT.md).
 
 ## Для ведущего
 

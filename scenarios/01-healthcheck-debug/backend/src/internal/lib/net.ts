@@ -1,10 +1,10 @@
 import * as net from 'net';
 import { MESSAGES } from '../checks/messages';
 
-// TCP-проба порта зависимости. Порт строго типизирован как number: если в чек
-// прилетит строка (например, значение из .env забыли привести через Number()),
-// проба не станет молча коннектиться абы куда, а сразу упадет с понятным
-// TypeError и стек-трейсом — чек уйдет в red с внятной причиной.
+// TCP-проба порта. Порт строго типизирован как number: если в пробу прилетит
+// строка (например, значение из .env забыли привести через Number()), проба не
+// станет молча коннектиться абы куда, а сразу упадет с понятным TypeError и
+// стек-трейсом — соответствующий чек уйдет в red с внятной причиной.
 export function probeTcpPort(
   host: string,
   port: number,
@@ -14,7 +14,7 @@ export function probeTcpPort(
     if (typeof port !== 'number' || !Number.isInteger(port)) {
       reject(
         new TypeError(
-          MESSAGES.probePort.typeMismatch(typeof port, JSON.stringify(port)),
+          MESSAGES.tcpConnect.typeMismatch(typeof port, JSON.stringify(port)),
         ),
       );
       return;
@@ -26,7 +26,7 @@ export function probeTcpPort(
     socket.setTimeout(timeoutMs);
     socket.on('timeout', () => {
       socket.destroy();
-      reject(new Error(`таймаут на ${host}:${port}`));
+      reject(new Error(`connection timed out for ${host}:${port}`));
     });
     socket.on('error', (error) => reject(error));
   });

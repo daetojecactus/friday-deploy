@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { Client } from 'pg';
 import Redis from 'ioredis';
+import { MongoClient } from 'mongodb';
 import {
   CHECK_NAMES,
   createErrorResult,
@@ -9,21 +10,11 @@ import {
   httpGet,
   MESSAGES,
   probeTcpPort,
-  vendorUrl,
   type CheckResult,
 } from './internal';
-import { apiUrl } from './internal/config';
 
-// 10 health-проверок. Каждый эндпоинт самодостаточен: читает свою конфигурацию,
-// сам ходит в зависимость и сам решает green/red. Логика одной проверки читается
-// и чинится независимо от остальных.
-//
-// Служебная обвязка (тип результата, имена чеков, адреса, хелперы green/red,
-// сокет-проба, тексты сообщений) вынесена в ./internal — здесь остается только
-// логика проверок. Значения берутся из .env (см. .env.example). Правки в .env и
-// в этом файле применяются на лету — пересобирать контейнер не нужно.
-
-const RATE_LIMIT_ATTEMPTS = 5;
+const apiUrl = process.env.API_URL;
+const vendorApiUrl = process.env.VENDOR_API_URL;
 
 @Controller('checks')
 export class ChecksController {
@@ -73,13 +64,16 @@ export class ChecksController {
     redis.on('error', () => {});
     try {
       await redis.connect();
+
       const pong = await redis.ping();
-      return pong === 'PONG'
-        ? createSuccessResult(CHECK_NAMES.REDIS_PING)
-        : createErrorResult(
-            CHECK_NAMES.REDIS_PING,
-            MESSAGES.redis.unexpectedReply(pong),
-          );
+      if (pong === 'PONG') {
+        return createSuccessResult(CHECK_NAMES.REDIS_PING);
+      } else {
+        return createErrorResult(
+          CHECK_NAMES.REDIS_PING,
+          MESSAGES.redis.unexpectedReply(pong),
+        );
+      }
     } catch (error: any) {
       return createErrorResult(
         CHECK_NAMES.REDIS_PING,
@@ -97,18 +91,22 @@ export class ChecksController {
   //#3: формат ответа вендора
   @Get('vendor-format')
   async vendorFormat(): Promise<CheckResult> {
-    const response = await httpGet(vendorUrl('/data'), {
+    const response = await httpGet(`${vendorApiUrl}/data`, {
       Accept: 'application/json',
     });
+
     const text = await response.text();
     try {
       const data = JSON.parse(text);
-      return data.ok
-        ? createSuccessResult(CHECK_NAMES.VENDOR_API_HEADERS)
-        : createErrorResult(
-            CHECK_NAMES.VENDOR_API_HEADERS,
-            MESSAGES.vendorFormat.unexpectedBody(text.slice(0, 80)),
-          );
+
+      if (data.ok) {
+        return createSuccessResult(CHECK_NAMES.VENDOR_API_HEADERS);
+      } else {
+        return createErrorResult(
+          CHECK_NAMES.VENDOR_API_HEADERS,
+          MESSAGES.vendorFormat.unexpectedBody(text.slice(0, 80)),
+        );
+      }
     } catch (error: any) {
       return createErrorResult(
         CHECK_NAMES.VENDOR_API_HEADERS,
@@ -121,7 +119,7 @@ export class ChecksController {
   @Get('vendor-auth')
   async vendorAuth(): Promise<CheckResult> {
     const token = env('VENDOR_API_TOKEN') ?? '';
-    const response = await httpGet(vendorUrl('/profile'), {
+    const response = await httpGet(`${vendorApiUrl}/profile`, {
       Authorization: `Bearer ${token}`,
     });
     if (response.status === 200)
@@ -136,7 +134,7 @@ export class ChecksController {
   //#5: маршрутизация к вендору
   @Get('vendor-routing')
   async vendorStatus(): Promise<CheckResult> {
-    const url = vendorUrl('/status');
+    const url = `${vendorApiUrl}/status`;
     const response = await httpGet(url);
     if (response.status === 200)
       return createSuccessResult(CHECK_NAMES.API_ROUTING);
@@ -146,19 +144,21 @@ export class ChecksController {
     );
   }
 
-  //#6: разбор ответа сервиса отчетов
+  //#6: ответ сервиса отчетов
   @Get('report')
   async report(): Promise<CheckResult> {
-    const response = await httpGet(apiUrl('/report'));
+    const response = await httpGet(`${apiUrl}/report`);
     const text = await response.text();
     try {
       const data = JSON.parse(text);
-      return data.status === 'ok'
-        ? createSuccessResult(CHECK_NAMES.RESPONSE_FORMAT)
-        : createErrorResult(
-            CHECK_NAMES.RESPONSE_FORMAT,
-            MESSAGES.report.unexpectedShape(response.status, text.slice(0, 80)),
-          );
+      if (data.status === 'ok') {
+        return createSuccessResult(CHECK_NAMES.RESPONSE_FORMAT);
+      } else {
+        return createErrorResult(
+          CHECK_NAMES.RESPONSE_FORMAT,
+          MESSAGES.report.unexpectedShape(response.status, text.slice(0, 80)),
+        );
+      }
     } catch (error: any) {
       return createErrorResult(
         CHECK_NAMES.RESPONSE_FORMAT,
@@ -171,55 +171,63 @@ export class ChecksController {
   @Get('cors')
   async cors(): Promise<CheckResult> {
     const origin = 'http://localhost:8080';
-    const response = await httpGet(apiUrl('/cors-check'), {
+    const response = await httpGet(`${apiUrl}/cors-check`, {
       Origin: origin,
     });
     const allowedOrigin = response.headers.get('access-control-allow-origin');
-    if (allowedOrigin === '*' || allowedOrigin === origin)
+    if (allowedOrigin === '*' || allowedOrigin === origin) {
       return createSuccessResult(CHECK_NAMES.CORS_HEADERS);
+    }
     return createErrorResult(
       CHECK_NAMES.CORS_HEADERS,
       MESSAGES.cors.policyHeaderMissing(allowedOrigin),
     );
   }
 
-  //#8: TCP-проба порта зависимости
-  @Get('probe-port')
-  async probePort(): Promise<CheckResult> {
-    const host = env('REDIS_HOST') ?? 'redis';
-    const port = Number(env('REDIS_PORT') ?? 6379);
+  //#8: TCP соединение
+  @Get('tcp-connect')
+  async tcpConnect(): Promise<CheckResult> {
+    const port = Number(env('PORT'));
     try {
-      await probeTcpPort(host, port);
-      return createSuccessResult(CHECK_NAMES.CONFIG_PARSING);
+      await probeTcpPort('127.0.0.1', port);
+      return createSuccessResult(CHECK_NAMES.TCP_CONNECT);
     } catch (error: any) {
-      console.error(MESSAGES.probePort.crashed, error);
+      console.error(MESSAGES.tcpConnect.crashed, error);
       return createErrorResult(
-        CHECK_NAMES.CONFIG_PARSING,
-        MESSAGES.probePort.failed(host, port, error.message),
+        CHECK_NAMES.TCP_CONNECT,
+        MESSAGES.tcpConnect.connectFailed(port, error.message),
       );
     }
   }
 
-  //#9: rate limiter
-  @Get('rate-limit')
-  async rateLimit(): Promise<CheckResult> {
-    let rejected = 0;
-    for (let attempt = 0; attempt < RATE_LIMIT_ATTEMPTS; attempt++) {
-      const response = await httpGet(apiUrl('/limited'));
-      if (response.status === 429) rejected++;
+  //#9: коннект к MongoDB
+  @Get('mongo')
+  async mongo(): Promise<CheckResult> {
+    const host = env('MONGO_HOST');
+    const uri = `mongodb://${env('MONGO_USER')}:${env('MONGO_PASSWORD')}@${host}:${Number(env('MONGO_PORT') ?? 27017)}/?authSource=admin`;
+    const client = new MongoClient(uri, { serverSelectionTimeoutMS: 2500 });
+    try {
+      await client.connect();
+      await client.db('admin').command({ ping: 1 });
+      return createSuccessResult(CHECK_NAMES.MONGO_CONNECTION);
+    } catch (error: any) {
+      return createErrorResult(
+        CHECK_NAMES.MONGO_CONNECTION,
+        MESSAGES.mongo.unreachable(host, error.message || error.code || error),
+      );
+    } finally {
+      try {
+        await client.close();
+      } catch (closeError) {
+        console.error(MESSAGES.mongo.closeFailed, closeError);
+      }
     }
-    return rejected === 0
-      ? createSuccessResult(CHECK_NAMES.RATE_LIMITER)
-      : createErrorResult(
-          CHECK_NAMES.RATE_LIMITER,
-          MESSAGES.rateLimit.tripped(rejected, RATE_LIMIT_ATTEMPTS),
-        );
   }
 
   //#10: баланс вендора
   @Get('vendor-amount')
   async vendorAmount(): Promise<CheckResult> {
-    const response = await httpGet(vendorUrl('/balance'));
+    const response = await httpGet(`${vendorApiUrl}/balance`);
     const data = await response.json();
     const amount = Number(data.balance);
     if (!Number.isFinite(amount))

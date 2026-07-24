@@ -1,10 +1,10 @@
 // Тексты всех сообщений стенда собраны здесь, чтобы контроллер оставался чистым:
 // в checks.controller видна только логика проверок, без отвлекающих строк.
 //
-// Формулировки намеренно НЕ в лоб: они называют класс проблемы (тип, разбор,
-// доступ, маршрут), но не диктуют «что именно поправить» — участник должен
-// сам додумать причину по симптому и данным. Все тексты — на английском, как
-// реальные ошибки сервисов.
+// Формулировки намеренно НЕ дают готовых решений: они называют класс проблемы
+// (тип данных, разбор ответа, сетевой доступ, маршрут, заголовок), но не диктуют
+// «что именно поправить» — участник сам восстанавливает причину по симптому,
+// логам и данным. Все тексты — на английском, как реальные ошибки сервисов.
 
 export const MESSAGES = {
   db: {
@@ -13,23 +13,24 @@ export const MESSAGES = {
     closeFailed: '[db] failed to close data store connection',
   },
   redis: {
-    unexpectedReply: (reply: string) => `unexpected handshake reply: ${reply}`,
+    unexpectedReply: (reply: string) =>
+      `unexpected handshake reply from cache node: ${reply}`,
     noResponse: (detail: string) => `cache node did not respond: ${detail}`,
     closeFailed: '[redis] failed to close cache client',
   },
   vendorFormat: {
     unexpectedBody: (body: string) =>
-      `response shape did not match expectations: ${body}`,
+      `upstream response shape did not match expectations: ${body}`,
     notJson: (detail: string, body: string) =>
       `could not deserialize upstream payload (${detail}): ${body}`,
   },
   vendorAuth: {
     refused: (status: number, body: string) =>
-      `upstream refused the credentials (${status}): ${body}`,
+      `upstream rejected the credentials (HTTP ${status}): ${body}`,
   },
   apiRouting: {
     unexpectedStatus: (status: number, url: string) =>
-      `endpoint answered ${status} (${url})`,
+      `endpoint answered HTTP ${status} (${url})`,
   },
   report: {
     unexpectedShape: (status: number, body: string) =>
@@ -39,21 +40,22 @@ export const MESSAGES = {
   },
   cors: {
     policyHeaderMissing: (value: string | null) =>
-      `cross-origin policy header not present (got: ${value ?? '<none>'})`,
+      `cross-origin policy header not present in response (got: ${value ?? '<none>'})`,
   },
-  probePort: {
-    failed: (host: string, port: unknown, detail: string) =>
-      `port probe did not complete (${host}:${port}): ${detail}`,
-    crashed: '[probe-port] port probe crashed',
+  tcpConnect: {
+    connectFailed: (port: unknown, detail: string) =>
+      `service port did not accept a connection (127.0.0.1:${port}): ${detail}`,
     typeMismatch: (type: string, value: string) =>
-      `typing error: expected number, received ${type} (${value})`,
+      `port configuration has the wrong type: expected number, received ${type} (${value})`,
+    crashed: '[tcp-connect] connection attempt crashed',
   },
-  rateLimit: {
-    tripped: (rejected: number, total: number) =>
-      `requests were shed by an upstream guard: ${rejected}/${total} (HTTP 429)`,
+  mongo: {
+    unreachable: (host: string | undefined, detail: unknown) =>
+      `document store did not accept the connection (host=${host}): ${detail}`,
+    closeFailed: '[mongo] failed to close document store connection',
   },
   vendorAmount: {
     typeMismatch: (value: string, type: string) =>
-      `typing error in upstream payload: ${value} (${type})`,
+      `upstream field has the wrong type: ${value} (${type})`,
   },
 } as const;

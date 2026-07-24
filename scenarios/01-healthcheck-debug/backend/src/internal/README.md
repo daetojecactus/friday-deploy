@@ -6,7 +6,6 @@
 ```
 internal/
 ├─ index.ts                     # публичная точка входа для checks.controller
-├─ config.ts                    # адреса стенда: APP_PORT, HOST_URL, vendorUrl()
 ├─ controllers/                 # имитации внешних систем + агрегатор дашборда
 │  ├─ index.ts                  #   баррель со всеми тремя контроллерами
 │  ├─ dashboard.controller.ts   #   агрегатор /api/checks (все 10 проверок разом)
@@ -18,8 +17,7 @@ internal/
 └─ lib/                         # низкоуровневая обвязка
    ├─ env.ts                    #   чтение .env на лету
    ├─ http.ts                   #   GET с таймаутом
-   ├─ net.ts                    #   TCP-проба порта (строгая типизация)
-   └─ limiter.ts                #   rate limiter на Redis
+   └─ net.ts                    #   TCP-проба порта (строгая типизация)
 ```
 
 `checks.controller.ts` собирает 10 проверок только из `./internal` (барреля),

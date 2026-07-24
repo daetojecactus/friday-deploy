@@ -11,6 +11,14 @@ services:
     # Redis поднят с паролем — клиент обязан его передавать.
     command: ["redis-server", "--requirepass", "secret"]
 
+  mongo:
+    image: mongo:7
+    # MongoDB поднята с root-пользователем — клиент обязан передавать его учетные
+    # данные (см. MONGO_USER / MONGO_PASSWORD в .env, authSource=admin).
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: app
+      MONGO_INITDB_ROOT_PASSWORD: secret
+
   backend:
     build: ./backend
     env_file: .env
@@ -26,3 +34,4 @@ services:
     depends_on:
       - postgres
       - redis
+      - mongo

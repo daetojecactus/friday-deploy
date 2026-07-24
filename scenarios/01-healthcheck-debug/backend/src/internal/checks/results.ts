@@ -21,8 +21,8 @@ export const CHECK_NAMES = {
   API_ROUTING: 'api_routing',
   RESPONSE_FORMAT: 'response_format',
   CORS_HEADERS: 'cors_headers',
-  CONFIG_PARSING: 'config_parsing',
-  RATE_LIMITER: 'rate_limiter',
+  TCP_CONNECT: 'tcp_connect',
+  MONGO_CONNECTION: 'mongo_connection',
   TYPE_MISMATCH: 'type_mismatch',
 } as const;
 

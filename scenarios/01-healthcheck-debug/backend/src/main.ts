@@ -7,14 +7,13 @@ import { configurePlatform } from './internal';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Пути чувствительны к регистру: /api/report и /api/Report — разные маршруты.
+  //чувствительность к регистру
   app.set('case sensitive routing', true);
 
-  // CORS для фронтенд-дашборда.
+  //CORS для фронтенда
   app.enableCors();
 
-  // Служебная обвязка платформы (префикс /api с исключениями для вендора и
-  // раздача статики) вынесена в ./internal — в дебаге не участвует.
+  //cлужебная обвязка платформы
   configurePlatform(app);
 
   const port = Number(process.env.PORT ?? 3000);

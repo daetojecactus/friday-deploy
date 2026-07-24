@@ -3,5 +3,6 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . .
-# src монтируется из хоста (docker-compose); nodemon (polling) перезапускает бэкенд на любой правке.
+#src монтируется из хоста 
+#nodemon смотрит бэкенд
 CMD ["npm", "run", "dev"]

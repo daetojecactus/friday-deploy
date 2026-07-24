@@ -38,11 +38,11 @@ export type EnvKey =
   | 'REDIS_HOST'
   | 'REDIS_PORT'
   | 'REDIS_PASSWORD'
-  | 'VENDOR_API_TOKEN'
-  | 'VENDOR_API_URL'
-  | 'API_URL'
-  | 'REDIS_RATE_LIMIT_MAX'
-  | 'REDIS_RATE_LIMIT_WINDOW_SEC';
+  | 'MONGO_HOST'
+  | 'MONGO_PORT'
+  | 'MONGO_USER'
+  | 'MONGO_PASSWORD'
+  | 'VENDOR_API_TOKEN';
 
 export function env(name: EnvKey): string | undefined {
   const fromFile = parseEnvFile(ENV_PATH)[name];

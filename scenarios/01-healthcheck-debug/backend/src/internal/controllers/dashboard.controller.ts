@@ -1,10 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { httpGet } from '../lib/http';
-import { HOST_URL } from '../config';
 
 // Служебный эндпоинт дашборда: собирает все 10 проверок одним ответом.
 // Участникам этот агрегатор не нужен — они смотрят на карточки и, при желании,
 // дергают конкретные /api/checks/<name> напрямую через curl.
+
+// Базовый адрес нашего API (тот же, что используют проверки) — берется из .env.
+const apiUrl = process.env.API_URL;
 
 // Порядок = порядок карточек на дашборде.
 const CHECK_SLUGS = [
@@ -15,8 +17,8 @@ const CHECK_SLUGS = [
   'vendor-routing',
   'report',
   'cors',
-  'probe-port',
-  'rate-limit',
+  'tcp-connect',
+  'mongo',
   'vendor-amount',
 ];
 
@@ -24,7 +26,7 @@ const CHECK_SLUGS = [
 export class DashboardController {
   @Get('checks')
   async checks() {
-    const base = `${HOST_URL}/api/checks`;
+    const base = `${apiUrl}/checks`;
     return Promise.all(
       CHECK_SLUGS.map(async (slug) => {
         try {

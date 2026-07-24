@@ -47,8 +47,10 @@ curl -i -H 'Authorization: Bearer <VENDOR_API_TOKEN из .env>' \
 curl -i http://localhost:8080/vendor/api/v2/balance
 
 # Пинг зависимостей
-docker-compose exec redis redis-cli -a <REDIS_PASSWORD> ping   # ждем PONG
-docker-compose exec postgres pg_isready -U app                 # ждем accepting connections
+docker-compose exec redis redis-cli -a <REDIS_PASSWORD> ping    # ждем PONG
+docker-compose exec postgres pg_isready -U app                  # ждем accepting connections
+docker-compose exec mongo mongosh -u <MONGO_USER> -p <MONGO_PASSWORD> \
+        --authenticationDatabase admin --eval 'db.runCommand({ ping: 1 })'  # ждем ok: 1
 
 # Логи и статус
 docker-compose logs --tail=50 backend
@@ -59,5 +61,6 @@ docker-compose ps
 
 - Красная карточка показывает текст ошибки — читайте его.
 - Часть проверок чинится в `.env`, часть — в `backend/src/checks.controller.ts`.
-- Проверки независимы, кроме одной связки: почините ее — и одна из проверок
-  поменяет поведение.
+- Проверки независимы — каждую можно чинить в любом порядке.
+- Полный контекст стенда (архитектура, назначение каждой проверки) — в
+  [CONTEXT.md](CONTEXT.md).

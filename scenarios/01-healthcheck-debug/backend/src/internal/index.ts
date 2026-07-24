@@ -5,7 +5,6 @@ export { env } from './lib/env';
 export { httpGet } from './lib/http';
 export { probeTcpPort } from './lib/net';
 export { configurePlatform } from './platform';
-export { HOST_URL, vendorUrl, apiUrl } from './config';
 export { MESSAGES } from './checks/messages';
 export type { CheckResult } from './checks/results';
 export {
