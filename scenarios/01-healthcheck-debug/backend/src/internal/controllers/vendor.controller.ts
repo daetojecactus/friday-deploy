@@ -9,7 +9,7 @@ import { Controller, Get, Headers, HttpException, Res } from '@nestjs/common';
 // предсказуемо и отдает фиксированные ответы.
 
 // Ключ, который принимает вендор (наша сторона шлет свой из .env).
-const VENDOR_TOKEN = 'sk_live_valid_2026';
+const VENDOR_TOKEN = 'valid_token_2025';
 
 @Controller('vendor/api/v2')
 export class VendorController {

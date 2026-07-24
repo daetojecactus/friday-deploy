@@ -37,7 +37,10 @@ export class ChecksController {
     } catch (error: any) {
       return createErrorResult(
         CHECK_NAMES.POSTGRES_CONNECTION,
-        MESSAGES.postgres.unreachable(host, error.message || error.code || error),
+        MESSAGES.postgres.unreachable(
+          host,
+          error.message || error.code || error,
+        ),
       );
     } finally {
       try {
