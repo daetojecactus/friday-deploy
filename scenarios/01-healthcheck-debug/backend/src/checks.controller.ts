@@ -120,7 +120,7 @@ export class ChecksController {
   async vendorAuth(): Promise<CheckResult> {
     const token = env('VENDOR_API_TOKEN') ?? '';
     const response = await httpGet(`${vendorApiUrl}/profile`, {
-      Authorization: `Bearer ${token}`,
+      Authorization: `bearer ${token}`,
     });
     if (response.status === 200)
       return createSuccessResult(CHECK_NAMES.VENDOR_AUTH_SCHEME);
