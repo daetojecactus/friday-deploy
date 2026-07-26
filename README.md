@@ -14,6 +14,7 @@
 | #   | Папка                                                              | Тема                                                 | Стек              |
 | --- | ----------------------------------------------------------------- | ---------------------------------------------------- | ----------------- |
 | 01  | [`scenarios/01-healthcheck-debug/`](scenarios/01-healthcheck-debug/) | Дашборд из 10 healthcheck'ов — сделать все зелёными | NestJS + PG + Redis + Mongo |
+| 02  | [`scenarios/02-mongodb-dubug/`](scenarios/02-mongodb-dubug/)       | Ops-консоль дежурного — оживить сломанную связку с MongoDB | NestJS + MongoDB |
 
 Новые сценарии добавляются как отдельные папки в `scenarios/` с собственным
 `README.md` и `docker-compose.yml`. Стек может быть любым (Node, Python и т.д.) —
@@ -24,13 +25,15 @@
 Сценарии рассчитаны на запуск **по одному за раз** (каждый занимает порт 8080):
 
 ```bash
-cd scenarios/01-healthcheck-debug
-docker-compose up --build
+cd scenarios/01-healthcheck-debug   # или scenarios/02-mongodb-dubug
+cp .env.example .env
+docker compose up --build           # на старых установках: docker-compose
 ```
 
-Дашборд сценария открывается на **http://localhost:8080**. Подробности,
+Страница сценария открывается на **http://localhost:8080**. Подробности,
 список проверок и плейбук ведущего — в `README.md` и `SABOTAGE.md` внутри
-папки сценария.
+папки сценария. Сценарий 02 отличается механикой: вместо дашборда с чеками —
+живое приложение без автоматических проверок, которое оживает по мере починки.
 
 ## Общие правила урока
 

@@ -1,0 +1,47 @@
+services:
+  mongo:
+    image: mongo:7
+    # Кэш WiredTiger урезан до 256 МБ: так разговор про «индекс не влезает в
+    # память» становится предметным на демо-данных. Жесткого OOM-лимита нет
+    # намеренно — падение mongod посреди урока убило бы стенд.
+    command: >
+      mongod --auth --bind_ip_all
+      --wiredTigerCacheSizeGB 0.25
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root_secret
+      MONGO_INITDB_DATABASE: crm
+    ports:
+      # Порт публикуется: ни один инцидент не завязан на недоступность базы,
+      # а GUI-клиент (Compass, DataGrip) участнику только помогает.
+      - "27017:27017"
+    volumes:
+      - ./internal/mongo-init:/docker-entrypoint-initdb.d:ro
+      - mongo_data:/data/db
+    mem_limit: 1g
+
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      # Служебное подключение стенда: установка схемы, данных и поломок.
+      # Не из .env — приложение работает под своим ограниченным пользователем.
+      ADMIN_MONGO_URI: mongodb://root:root_secret@mongo:27017/?authSource=admin
+      # Какие инциденты ломать при установке. Пустая строка — эталонный стенд.
+      STAND_INCIDENTS: "1,2,3,4,5,6,7"
+      # Показывается в отчете по хранилищу (см. --wiredTigerCacheSizeGB выше).
+      MONGO_CACHE_MB: "256"
+    ports:
+      - "8080:3000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./frontend:/app/public
+      - ./:/app/host:ro
+    depends_on:
+      - mongo
+
+volumes:
+  # Данные стенда переживают `docker compose down`, потому что установка
+  # однократная и не должна затирать починки участника.
+  # Полный сброс: `docker compose down -v`.
+  mongo_data:
