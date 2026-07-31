@@ -1,0 +1,136 @@
+/* Раскладка стенда: рабочая область живет строго в одном экране, страница
+   целиком не скроллится. Скролл — только внутри двух контейнеров: содержимого
+   активной вкладки слева и ленты чата справа. */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0e1015;
+}
+
+.stand-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.stand-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(360px, 0.82fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.stand-column {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 16px;
+}
+
+/* Карточка, у которой тело — единственная скроллируемая область. */
+.stand-card-fill {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.stand-card-fill > .ant-card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 14px 16px;
+}
+
+.stand-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  flex: 1;
+  padding-right: 6px;
+}
+
+.stand-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.stand-scroll::-webkit-scrollbar-thumb {
+  background: #2a2e3a;
+  border-radius: 8px;
+}
+
+/* Вкладки симулятора: шапка фиксирована, скроллится только содержимое. */
+.stand-tabs {
+  flex: 1;
+  min-height: 0;
+}
+
+.stand-tabs .ant-tabs-content-holder {
+  display: flex;
+  min-height: 0;
+}
+
+.stand-tabs .ant-tabs-content,
+.stand-tabs .ant-tabs-tabpane {
+  height: 100%;
+  min-height: 0;
+}
+
+.stand-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Сырой ответ API: тело показывается как есть, скролл внутри блока. */
+.stand-raw {
+  margin: 0;
+  padding: 10px 12px;
+  max-height: 240px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #cfd3de;
+  background: #12141b;
+}
+
+.stand-chat-message + .stand-chat-message {
+  border-top: 1px solid #23262f;
+}
+
+/* Узкие экраны: один экран уже не вмещает две панели, разрешаем скролл страницы. */
+@media (max-width: 1120px) {
+  body {
+    overflow: auto;
+  }
+
+  .stand-shell {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .stand-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stand-column {
+    grid-template-rows: auto minmax(420px, 60vh);
+  }
+
+  .stand-tabs {
+    min-height: 460px;
+  }
+}

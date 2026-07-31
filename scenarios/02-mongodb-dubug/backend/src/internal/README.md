@@ -8,7 +8,7 @@
 ```
 internal/
 ├─ platform.ts        # префикс /api, конверт ответов, статика, старт стенда
-├─ stand.controller.ts# /api/stand/status и /api/stand/reset
+├─ stand.controller.ts# /api/stand/status, /connection, /reset
 ├─ install/           # ЭТАЛОН и ПОЛОМКИ
 │  ├─ schema.ts       #   валидаторы и индексы такими, какими они должны быть
 │  ├─ data.ts         #   детерминированные демо-данные
@@ -19,7 +19,8 @@ internal/
 └─ lib/
    ├─ mongo.ts        #   подключение приложения (crm_app, readWrite)
    ├─ admin.ts        #   root-подключение установщика + база stand_meta
-   └─ envelope.ts     #   { ok, data } / { ok, error } с сырой ошибкой MongoDB
+   ├─ envelope.ts     #   { ok, data } / { ok, error } с сырой ошибкой MongoDB
+   └─ connection.ts   #   готовая строка подключения для участника и коллег
 ```
 
 Два правила, на которых держится стенд:

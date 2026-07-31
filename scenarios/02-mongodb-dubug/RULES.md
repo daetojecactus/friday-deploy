@@ -19,9 +19,10 @@
    `docker compose logs`, документация MongoDB.
 5. Папку `backend/src/internal/` не открываем — там установщик стенда и список
    поломок открытым текстом.
-6. Кнопка «Пересобрать стенд» (она же `POST /api/stand/reset`) возвращает стенд в
-   исходное сломанное состояние. Стирает и данные, и починки — жмем только по
-   решению команды.
+6. Кнопка «Пересобрать стенд» на вкладке «Система» (она же
+   `POST /api/stand/reset`) возвращает стенд в исходное сломанное состояние.
+   Стирает и данные, и починки — жмем только по решению команды. Поэтому она и
+   спрятана за подтверждением словом.
 
 ## Пересборка
 
@@ -35,13 +36,17 @@
 ## Доступ к базе
 
 ```bash
-# снаружи (порт 27017 проброшен)
+# снаружи (порт 27017 проброшен на все интерфейсы машины)
 mongosh "mongodb://engineer:engineer_secret@localhost:27017/crm"
 
 # через контейнер
 docker compose exec mongo mongosh -u engineer -p engineer_secret \
         --authenticationDatabase crm crm
 ```
+
+Готовые строки — на вкладке «Система» и в `GET /api/stand/connection`. Адрес в
+них тот, по которому открыта страница, поэтому строку можно скопировать и отдать
+коллеге в той же сети.
 
 Права `engineer`: `readWrite` (документы, `createIndex`, `dropIndex`) плюс
 `dbAdmin` (`collMod` для валидаторов и опций TTL-индекса, статистика).
@@ -84,6 +89,7 @@ db.<coll>.updateMany({ ... }, [{ $set: { ... } }])
 
 ```bash
 curl -s http://localhost:8080/api/stand/status        # то же, что правая панель
+curl -s http://localhost:8080/api/stand/connection   # строка подключения к базе
 curl -s http://localhost:8080/api/customers
 curl -s http://localhost:8080/api/customers/<id>
 curl -s http://localhost:8080/api/orders
@@ -91,7 +97,7 @@ curl -s http://localhost:8080/api/incidents
 curl -s http://localhost:8080/api/storage/report
 
 curl -s -X POST http://localhost:8080/api/customers -H 'Content-Type: application/json' \
-     -d '{"firstName":"Анна","lastName":"Тестова","email":"t1@example.com"}'
+     -d '{"firstName":"Винсент","lastName":"Бэггинс","email":"t1@example.com"}'
 curl -s -X POST http://localhost:8080/api/auth/login -H 'Content-Type: application/json' \
      -d '{"customerId":"<id>"}'
 curl -s 'http://localhost:8080/api/auth/me?token=<token>'

@@ -12,16 +12,21 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root_secret
       MONGO_INITDB_DATABASE: crm
     ports:
-      # Порт публикуется: ни один инцидент не завязан на недоступность базы,
-      # а GUI-клиент (Compass, DataGrip) участнику только помогает.
-      - "27017:27017"
+      # Порт публикуется на всех интерфейсах машины: к базе подключается и
+      # участник, и коллеги из той же локальной сети (mongosh, Compass,
+      # DataGrip). Ни один инцидент не завязан на недоступность базы.
+      # Готовая строка подключения — на вкладке «Система» и в /api/stand/connection.
+      - "0.0.0.0:27017:27017"
     volumes:
       - ./internal/mongo-init:/docker-entrypoint-initdb.d:ro
       - mongo_data:/data/db
     mem_limit: 1g
 
   backend:
-    build: ./backend
+    build:
+      # Контекст — корень сценария: в образ едут и бэкенд, и собранный фронтенд.
+      context: .
+      dockerfile: backend/Dockerfile
     env_file: .env
     environment:
       # Служебное подключение стенда: установка схемы, данных и поломок.
@@ -31,12 +36,15 @@ services:
       STAND_INCIDENTS: "1,2,3,4,5,6,7"
       # Показывается в отчете по хранилищу (см. --wiredTigerCacheSizeGB выше).
       MONGO_CACHE_MB: "256"
+      # Порт базы снаружи — из него собирается строка подключения на странице.
+      MONGO_PUBLIC_PORT: "27017"
+      # Адрес стенда в сети. Пусто — берется тот, по которому открыта страница;
+      # задается в .env, если нужен фиксированный адрес (проброс, VPN, DNS-имя).
+      STAND_PUBLIC_HOST: "${STAND_PUBLIC_HOST:-}"
     ports:
-      - "8080:3000"
+      - "0.0.0.0:8080:3000"
     volumes:
       - ./backend/src:/app/src
-      - ./frontend:/app/public
-      - ./:/app/host:ro
     depends_on:
       - mongo
 

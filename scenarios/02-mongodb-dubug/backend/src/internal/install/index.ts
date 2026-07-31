@@ -9,6 +9,7 @@ import {
   buildMessage,
   buildOrders,
   buildTickets,
+  reseed,
 } from './data';
 import { BREAKAGES } from './breakage';
 
@@ -51,6 +52,9 @@ function selectedIncidents(): number[] {
 }
 
 async function fillDatabase(db: Db): Promise<void> {
+  // Пересборка должна давать ровно ту же базу, что и первая установка.
+  reseed();
+
   state.step = 'создаю коллекции и валидаторы';
   for (const name of COLLECTIONS) {
     await db.createCollection(name, VALIDATORS[name] ? { validator: VALIDATORS[name] } : {});

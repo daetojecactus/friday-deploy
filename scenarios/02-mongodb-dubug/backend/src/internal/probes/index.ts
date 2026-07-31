@@ -128,7 +128,7 @@ async function probeRegistration(db: Db): Promise<ProbeResult> {
   );
 
   const probe = {
-    firstName: twin?.firstName ?? 'Анна',
+    firstName: twin?.firstName ?? 'Винсент',
     lastName: 'Мониторинг',
     email: `monitoring+${Date.now()}@crm.local`,
     age: 33,

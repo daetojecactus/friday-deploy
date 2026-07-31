@@ -30,8 +30,11 @@ type ProbePhase = {
 const ESCALATE_AFTER_MS = 10 * 60_000;
 // Первые сообщения проставляются задним числом, чтобы лента на старте
 // выглядела как утренняя переписка, а не как пачка сообщений в одну секунду.
+// Шаг подобран под полный набор инцидентов (интро + до 13 жалоб): тред
+// начинается 20 минут назад и заканчивается за пару минут до «сейчас».
 const BOOTSTRAP_WINDOW_MS = 3 * 60_000;
-const BOOTSTRAP_STEP_MS = 150_000;
+const BOOTSTRAP_BACKDATE_MS = 20 * 60_000;
+const BOOTSTRAP_STEP_MS = 80_000;
 
 let messages: FeedMessage[] = [];
 let phases: Record<string, ProbePhase> = {};
@@ -41,10 +44,13 @@ let bootstrapSlot = 0;
 let finaleSent = false;
 
 function post(line: Line, probe: string | null, kind: FeedMessage['kind']): void {
-  const bootstrapping = Date.now() - startedAt < BOOTSTRAP_WINDOW_MS;
-  const at = bootstrapping
-    ? new Date(startedAt - 20 * 60_000 + bootstrapSlot++ * BOOTSTRAP_STEP_MS)
-    : new Date();
+  const now = Date.now();
+  const bootstrapping = now - startedAt < BOOTSTRAP_WINDOW_MS;
+  // На старте жалоб набирается больше десятка, поэтому «задний ход» обязательно
+  // упирается в now: без ограничения последние сообщения уехали бы в будущее.
+  const backdated = startedAt - BOOTSTRAP_BACKDATE_MS + bootstrapSlot * BOOTSTRAP_STEP_MS;
+  const at = bootstrapping ? new Date(Math.min(now, backdated)) : new Date();
+  if (bootstrapping) bootstrapSlot += 1;
 
   sequence += 1;
   messages.push({ ...line, id: sequence, at: at.toISOString(), probe, kind });
