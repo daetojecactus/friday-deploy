@@ -1,0 +1,572 @@
+/* ReportDailyBot — лендинг. Дизайн утверждён отделом маркетинга единогласно. */
+
+/* --- БАЗОВЫЕ АНИМАЦИИ ДЛЯ ЭПИЛЕПСИИ --- */
+@keyframes rainbow-bg {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes rainbow-text {
+  0% {
+    color: red;
+  }
+  20% {
+    color: yellow;
+  }
+  40% {
+    color: lime;
+  }
+  60% {
+    color: cyan;
+  }
+  80% {
+    color: blue;
+  }
+  100% {
+    color: magenta;
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes spin-wild {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  to {
+    transform: rotate(360deg) scale(1.2);
+  }
+}
+@keyframes shake-hard {
+  0% {
+    transform: translate(2px, 1px) rotate(0deg);
+  }
+  25% {
+    transform: translate(-3px, 0px) rotate(3deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  75% {
+    transform: translate(2px, 1px) rotate(-2deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+@keyframes falling-stuff {
+  0% {
+    top: -10%;
+    transform: rotate(0deg);
+  }
+  100% {
+    top: 110%;
+    transform: rotate(360deg);
+  }
+}
+@keyframes rising-stuff {
+  0% {
+    bottom: -10%;
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    bottom: 110%;
+    transform: rotate(-360deg);
+    opacity: 0;
+  }
+}
+
+/* --- ОСНОВНОЙ СТИЛЬ --- */
+body {
+  background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff0000);
+  background-size: 400% 400%;
+  animation: rainbow-bg 3s ease infinite;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  color: #fff;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* --- ДЕКОРАЦИИ ПО БОКАМ --- */
+.side-decoration {
+  position: fixed;
+  z-index: 999;
+  pointer-events: none;
+  width: 60px;
+}
+.fall-left-1 {
+  left: 2%;
+  animation: falling-stuff 3s linear infinite;
+}
+.fall-left-2 {
+  left: 8%;
+  animation: falling-stuff 4s linear infinite;
+  animation-delay: 1.5s;
+  width: 40px;
+}
+.fall-right-1 {
+  right: 2%;
+  animation: falling-stuff 3.5s linear infinite;
+  animation-delay: 0.5s;
+}
+.fall-right-2 {
+  right: 8%;
+  animation: falling-stuff 4.5s linear infinite;
+  animation-delay: 2s;
+  width: 50px;
+}
+.rise-left {
+  left: 5%;
+  animation: rising-stuff 5s linear infinite;
+  width: 30px;
+}
+.rise-right {
+  right: 5%;
+  animation: rising-stuff 6s linear infinite;
+  width: 30px;
+  animation-delay: 3s;
+}
+
+.explosion-corner {
+  position: fixed;
+  width: 150px;
+  z-index: 998;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.exp-tl {
+  top: 0;
+  left: 0;
+}
+.exp-tr {
+  top: 0;
+  right: 0;
+  transform: scaleX(-1);
+}
+.exp-bl {
+  bottom: 0;
+  left: 0;
+  transform: scaleY(-1);
+}
+.exp-br {
+  bottom: 0;
+  right: 0;
+  transform: scale(-1);
+}
+
+.banana-dancer {
+  position: fixed;
+  bottom: 100px;
+  left: 20px;
+  width: 80px;
+  z-index: 1001;
+}
+
+/* --- КОНТЕНТ --- */
+.header-marquee {
+  background: repeating-linear-gradient(45deg, yellow, yellow 10px, black 10px, black 20px);
+  color: red;
+  font-size: 35px;
+  font-weight: bold;
+  padding: 15px 0;
+  border-bottom: 10px ridge gold;
+  text-shadow: 2px 2px 0px white;
+}
+
+.hero {
+  text-align: center;
+  padding: 50px;
+  position: relative;
+  /* Фото нашего дата-центра. Лежит во внутреннем хранилище, но нам норм. */
+  background-image: url('{{CORP_ORIGIN}}/static/serverroom-3e8a.svg');
+  background-size: cover;
+  background-blend-mode: overlay;
+}
+
+h1 {
+  font-size: 80px;
+  color: yellow;
+  text-shadow:
+    5px 5px 0 red,
+    -5px -5px 0 blue,
+    10px 10px 10px black;
+  animation: shake-hard 0.2s infinite;
+  border: 5px dotted lime;
+  display: inline-block;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.gitlab-logo {
+  width: 150px;
+  animation: spin-wild 2s infinite linear;
+}
+.tg-logo {
+  width: 120px;
+  animation: spin-wild 3s infinite linear reverse;
+}
+
+.fire-text {
+  color: orange;
+  text-shadow:
+    0 0 10px red,
+    0 0 20px yellow,
+    0 0 30px white;
+  font-size: 45px;
+  font-weight: bold;
+  background-color: blue;
+  animation: blink 1.2s infinite;
+}
+
+.price-tag {
+  background: red;
+  display: inline-block;
+  padding: 30px;
+  border: 15px dashed yellow;
+  font-size: 60px;
+  transform: rotate(-5deg);
+  animation:
+    blink 0.4s infinite,
+    spin-wild 3s infinite linear alternate;
+  box-shadow: 0 0 50px yellow;
+}
+
+.cta-button {
+  background: #ff00ff;
+  color: white;
+  font-size: 50px;
+  padding: 30px 60px;
+  border: 20px ridge gold;
+  cursor: wait;
+  margin: 50px;
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 900;
+  animation:
+    rainbow-text 0.5s infinite,
+    shake-hard 0.5s infinite;
+  box-shadow:
+    0 0 30px white,
+    inset 0 0 30px white;
+}
+.cta-button:hover {
+  animation: spin-wild 0.2s infinite;
+}
+
+.live-counter {
+  display: inline-block;
+  background: black;
+  color: lime;
+  font-size: 32px;
+  padding: 15px 30px;
+  border: 8px double lime;
+  margin-top: 20px;
+}
+.live-counter span {
+  color: yellow;
+  font-size: 44px;
+  text-shadow: 0 0 12px lime;
+}
+
+/* Виджет очереди: пока витрина состояния не отвечает, блок скрыт. */
+.queue-status {
+  display: none;
+  margin-top: 10px;
+  color: #cfe;
+  font-size: 18px;
+}
+
+.benefits {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 50px;
+  gap: 20px;
+}
+.card {
+  background: lime;
+  color: black;
+  border: 10px outset blue;
+  padding: 20px;
+  width: 250px;
+  transform: skew(10deg);
+  font-weight: bold;
+}
+.card:hover {
+  animation: spin-wild 0.5s infinite linear;
+  background: magenta;
+  color: white;
+}
+.card-yellow {
+  background: yellow;
+  border-color: red;
+}
+.card-cyan {
+  background: cyan;
+  border-color: magenta;
+}
+
+.partners {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.partners img {
+  animation: spin-wild 4s infinite linear;
+}
+
+/* Демонстрация отчёта */
+.demo {
+  display: inline-block;
+  max-width: 900px;
+  text-align: left;
+}
+.demo-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 20px;
+  color: yellow;
+}
+.demo-select,
+.demo-shuffle {
+  font-family: inherit;
+  font-size: 18px;
+  padding: 8px 14px;
+  border: 6px inset gold;
+  background: #ffffe0;
+  color: #000;
+}
+.demo-shuffle {
+  background: lime;
+  border-style: outset;
+  border-color: magenta;
+  font-weight: 900;
+  cursor: pointer;
+}
+.demo-output {
+  background: #000;
+  color: lime;
+  border: 6px double yellow;
+  padding: 18px 22px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin: 0;
+  min-height: 200px;
+}
+
+/* Частые вопросы */
+.faq {
+  display: inline-block;
+  max-width: 800px;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.7);
+  border: 5px dotted yellow;
+  padding: 16px 22px;
+}
+.faq-item + .faq-item {
+  border-top: 2px dotted #555;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+.faq-question {
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: bold;
+  color: yellow;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+.faq-answer {
+  color: #cfe;
+  font-size: 18px;
+  margin: 6px 0 0;
+}
+
+.card-extra {
+  transform: skew(-10deg);
+  background: #ff8c00;
+  border-color: lime;
+}
+
+.reviews-block,
+.pricing-block,
+.subscribe-block,
+.partners-block,
+.benefits-block,
+.demo-block,
+.faq-block {
+  margin-top: 50px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.reviews-title {
+  font-size: 55px;
+  color: yellow;
+  background: red;
+  display: inline-block;
+  border: 5px dashed white;
+  padding: 0 15px;
+}
+.reviews,
+.pricing {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  display: inline-block;
+  border: 5px dotted yellow;
+  max-width: 900px;
+}
+.review-item {
+  margin-bottom: 18px;
+}
+.review-text {
+  font-size: 26px;
+  color: lime;
+  font-weight: bold;
+  margin: 0;
+}
+.review-author {
+  font-size: 18px;
+  color: white;
+  margin: 4px 0 0;
+}
+.loading {
+  color: #ccc;
+  font-size: 20px;
+}
+.party-gif {
+  border: 10px double gold;
+}
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  font-size: 24px;
+  color: yellow;
+  border-bottom: 2px dotted #555;
+  padding: 8px 0;
+}
+.pricing-row b {
+  color: lime;
+}
+
+.subscribe-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+}
+.subscribe-form input,
+.subscribe-form select {
+  font-family: inherit;
+  font-size: 22px;
+  padding: 10px;
+  border: 6px inset gold;
+  background: #ffffe0;
+  color: #000;
+}
+.subscribe-form button {
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: 900;
+  padding: 10px 30px;
+  background: lime;
+  color: black;
+  border: 8px outset magenta;
+  cursor: pointer;
+  animation: blink 1s infinite;
+}
+.disclaimer {
+  color: #ffd;
+  font-size: 16px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.discount-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: yellow;
+  color: red;
+  padding: 30px;
+  border: 10px dotted red;
+  z-index: 2000;
+  font-weight: bold;
+  font-size: 24px;
+  animation: blink 0.8s infinite;
+  box-shadow: 10px 10px 0px black;
+}
+#timer {
+  font-size: 40px;
+  color: blue;
+}
+
+.bottom-marquee {
+  border-top: 10px solid yellow;
+  border-bottom: 10px solid yellow;
+}
+.bottom-marquee span {
+  font-size: 60px;
+  color: yellow;
+  font-weight: 900;
+  text-shadow: 3px 3px black;
+}
+.bottom-marquee img {
+  vertical-align: middle;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  background: repeating-linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  color: white;
+  font-size: 20px;
+  text-shadow: 2px 2px 4px black;
+  border-top: 10px solid white;
+}
+.valid-badge {
+  border: 5px dotted red;
+  height: 31px;
+  width: 88px;
+}
+
+/* Панель админа. Прячем от клиентов до релиза второй версии. */
+.owner-panel {
+  display: none;
+}
+
+/* Счётчик из первой версии лендинга. Блок оставили пустым, скрипт остался. */
+.legacy-counter {
+  font-size: 14px;
+  opacity: 0.75;
+  margin-top: 8px;
+}

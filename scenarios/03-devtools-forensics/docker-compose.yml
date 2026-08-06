@@ -1,0 +1,61 @@
+services:
+  mongo:
+    # Наружу не публикуется: в базе только прогресс игры и лента чата.
+    image: mongo:7
+    command: mongod --bind_ip_all
+    volumes:
+      - mongo_data:/data/db
+    mem_limit: 512m
+
+  # Публичный контур — единственный адрес, который получает команда.
+  public:
+    build:
+      # Контекст — корень сценария: в образ едут бэкенд, исходники лендинга и
+      # собранный дашборд.
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: .env
+    environment:
+      APP_ROLE: public
+    ports:
+      - "0.0.0.0:8080:3000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./frontend/site:/app/site
+    depends_on:
+      - mongo
+
+  # Внутренний контур. Опубликован намеренно: без живого корпа половина утечек
+  # не была бы наблюдаемой. Порт далеко от 8080 — контуры не должны путаться.
+  corp:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: .env
+    environment:
+      APP_ROLE: corp
+    ports:
+      - "0.0.0.0:7070:3000"
+    volumes:
+      - ./backend/src:/app/src
+    depends_on:
+      - mongo
+
+  # Дашборд ведущего. Отдельный сервис и порт: он знает все ответы.
+  host:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: .env
+    environment:
+      APP_ROLE: host
+    ports:
+      - "0.0.0.0:9090:3000"
+    volumes:
+      - ./backend/src:/app/src
+    depends_on:
+      - mongo
+
+volumes:
+  # Прогресс переживает `docker compose down`. Полный сброс — `down -v`.
+  mongo_data:

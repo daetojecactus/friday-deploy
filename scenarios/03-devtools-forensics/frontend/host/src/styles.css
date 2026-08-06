@@ -1,0 +1,129 @@
+/* Раскладка дашборда: рабочая область живёт строго в одном экране, страница
+   целиком не скроллится. Скролл — только внутри таблицы утечек слева и внутри
+   ленты справа. Правило переехало из стенда 02. */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0e1015;
+}
+
+.stand-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.stand-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.8fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.stand-column {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 16px;
+}
+
+.stand-card-fill {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.stand-card-fill > .ant-card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 14px 16px;
+}
+
+.stand-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  flex: 1;
+  padding-right: 6px;
+}
+
+.stand-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.stand-scroll::-webkit-scrollbar-thumb {
+  background: #2a2e3a;
+  border-radius: 8px;
+}
+
+.stand-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.stand-chat-message + .stand-chat-message {
+  border-top: 1px solid #23262f;
+}
+
+/* «Тринити печатает…» — троеточие набегает само, как в мессенджере. */
+.chat-dots::after {
+  content: '';
+  animation: chat-dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes chat-dots {
+  0% {
+    content: '';
+  }
+  25% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  75% {
+    content: '...';
+  }
+}
+
+/* Найденная строка таблицы: подсвечиваем целиком, чтобы прогресс читался с
+   другого конца комнаты. */
+.leak-row-found > td {
+  background: rgba(59, 167, 118, 0.09) !important;
+}
+
+.leak-row-revealed > td {
+  background: rgba(201, 162, 39, 0.08) !important;
+}
+
+@media (max-width: 1180px) {
+  body {
+    overflow: auto;
+  }
+
+  .stand-shell {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .stand-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stand-column {
+    grid-template-rows: auto minmax(420px, 60vh);
+  }
+}

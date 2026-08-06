@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>!!!$$$ КУПИ REPORTDAILYBOT СЕЙЧАС $$$!!!</title>
+    <meta name="description" content="ReportDailyBot — отчёты сами летят в телегу! БЕСПЛАТНО!!!" />
+    <meta name="generator" content="rdb-build 2026.02.14" />
+    <meta name="ci-pipeline" content="{{CORP_ORIGIN}}/ci/pipeline-status-2f6a" />
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <!-- build: 2026.02.14 · ReportDailyBot Mega Turbo Ultimate Edition Platinum -->
+  </head>
+  <body>
+    <!-- ДЕКОРАЦИИ ПО БОКАМ (АБСУРД) -->
+    <img src="/assets/img/money.svg" class="side-decoration fall-left-1" alt="money" />
+    <img src="/assets/img/money.svg" class="side-decoration fall-left-2" alt="money" />
+    <img src="/assets/img/moneybag.svg" class="side-decoration fall-right-1" alt="money bag" />
+    <img src="/assets/img/diamond.svg" class="side-decoration fall-right-2" alt="diamond" />
+    <img src="/assets/img/diamond.svg" class="side-decoration rise-left" alt="diamond rise" />
+    <img src="/assets/img/moneybag.svg" class="side-decoration rise-right" alt="money rise" />
+
+    <img src="/assets/img/boom.svg" class="explosion-corner exp-tl" alt="boom" />
+    <img src="/assets/img/boom.svg" class="explosion-corner exp-tr" alt="boom" />
+    <img src="/assets/img/boom.svg" class="explosion-corner exp-bl" alt="boom" />
+    <img src="/assets/img/boom.svg" class="explosion-corner exp-br" alt="boom" />
+
+    <img src="/assets/img/banana.svg" class="banana-dancer" alt="banana" />
+
+    <div class="header-marquee">
+      <marquee scrollamount="30" bgcolor="black">
+        <span style="color: yellow">!!! ВНИМАНИЕ !!!</span>
+        <span style="color: lime">ЛУЧШЕЕ ПРЕДЛОЖЕНИЕ В ИСТОРИИ ЧЕЛОВЕЧЕСТВА</span>
+        <span style="color: cyan">!!! ОТЧЕТЫ САМИ ЛЕТЯТ В ТЕЛЕГУ !!!</span>
+        <span style="color: magenta">ШОК КОНТЕНТ!!!</span> КУПИ СЕЙЧАС ИЛИ ЖАЛЕЙ ВСЮ ЖИЗНЬ !!!
+      </marquee>
+    </div>
+
+    <!-- Фон hero задаётся в styles.css: тут его адреса нет и быть не может -->
+    <div class="hero">
+      <img src="/assets/img/gitlab.svg" alt="GitLab" class="gitlab-logo" />
+      <img src="/assets/img/telegram.svg" alt="Telegram" class="tg-logo" />
+      <br /><br />
+      <h1>ReportDailyBot</h1>
+      <p class="fire-text">
+        ТЫ ВСЕ ЕЩЕ ПИШЕШЬ ОТЧЕТЫ РУКАМИ??? <br />
+        ТЫ ЧТО, ИЗ КАМЕННОГО ВЕКА???
+      </p>
+
+      <div class="price-tag">
+        СКИДКА -146% <br />
+        <strike style="font-size: 30px; color: black">$9999999</strike> <br />
+        <span style="color: yellow; text-shadow: 2px 2px red">БЕСПЛАТНО!!!*</span>
+        <br />
+        (только сегодня!)
+      </div>
+
+      <br />
+      <!-- Главная кнопка лендинга. Ведёт на страницу акции через наш же /api. -->
+      <a href="/api/promo/mega" class="cta-button" id="cta">&gt;&gt;&gt; ХОЧУ СЕЙЧАС &lt;&lt;&lt;</a>
+
+      <div class="live-counter" id="live-counter">
+        <img src="/assets/img/rocket.svg" width="40" alt="rocket" />
+        ОТЧЕТОВ ОТПРАВЛЕНО СЕГОДНЯ:
+        <span id="reports-today">…</span>
+      </div>
+      <div class="queue-status" id="queue-status"></div>
+    </div>
+
+    <div class="benefits" id="benefits">
+      <div class="card">
+        <img src="/assets/img/fire.svg" width="100" alt="fire" />
+        <h3>МЕГА СКОРОСТЬ</h3>
+        <p>GitLab еще не проснулся, а бот уже отправил отчет твоему лиду! ПУШКА-ГОНКА!</p>
+      </div>
+      <div class="card card-yellow">
+        <img src="/assets/img/crown.svg" width="100" alt="crown" />
+        <h3>VIP ЭКСКЛЮЗИВ</h3>
+        <p>Уникальный алгоритм (на самом деле `if/else`) специально для твоего гениального кода!</p>
+      </div>
+      <div class="card card-cyan">
+        <img src="/assets/img/trophy.svg" width="100" alt="trophy" />
+        <h3>SUCCESSFUL SUCCESS</h3>
+        <p>Стань самым продуктивным в команде, ничего не делая!</p>
+      </div>
+    </div>
+
+    <center class="benefits-block">
+      <h2 class="reviews-title" id="benefits-title">ПОЧЕМУ ИМЕННО МЫ</h2>
+      <div class="benefits" id="extra-benefits"></div>
+    </center>
+
+    <center class="demo-block">
+      <h2 class="reviews-title" id="demo-title">ТАК ВЫГЛЯДИТ ТВОЙ ОТЧЕТ:</h2>
+      <div class="demo" id="demo"></div>
+    </center>
+
+    <center class="reviews-block">
+      <h2 class="reviews-title">ОТЗЫВЫ КЛИЕНТОВ (REAL!):</h2>
+      <br />
+      <div class="reviews" id="reviews">
+        <p class="loading">загружаем настоящие отзывы настоящих людей…</p>
+      </div>
+      <br />
+      <img src="/assets/img/party.svg" width="300" class="party-gif" alt="party" />
+    </center>
+
+    <center class="pricing-block">
+      <h2 class="reviews-title">ТАРИФЫ (ВСЕ БЕСПЛАТНЫЕ!!!):</h2>
+      <div class="pricing" id="pricing">
+        <p class="loading">считаем твою выгоду…</p>
+      </div>
+    </center>
+
+    <!-- ЗАЯВКА -->
+    <!-- TODO: перенести форму на шлюз, пока оставили как есть -->
+    <center class="subscribe-block">
+      <h2 class="reviews-title">ОСТАВЬ ЗАЯВКУ НА БЕСПЛАТНЫЙ БОТ!!!</h2>
+      <form
+        class="subscribe-form"
+        id="subscribe"
+        method="post"
+        action="{{CORP_ORIGIN}}/broadcast/subscribe-f2b7"
+      >
+        <input name="telegram" placeholder="@твой_телеграм" required />
+        <input name="gitlab" placeholder="твой gitlab username" required />
+        <select name="role">
+          <option value="dev">Разработчик</option>
+          <option value="qa">QA</option>
+          <option value="pm">PM</option>
+          <option value="sa">Системный аналитик</option>
+        </select>
+        <button type="submit">ЗАБРАТЬ БОТА!!!</button>
+      </form>
+      <p class="disclaimer">
+        Нажимая кнопку, ты соглашаешься получать отчёты о собственной работе. Это не corporate
+        рассылка, это судьба.
+      </p>
+    </center>
+
+    <center class="faq-block">
+      <h2 class="reviews-title" id="faq-title">ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ:</h2>
+      <div class="faq" id="faq"></div>
+    </center>
+
+    <center class="partners-block">
+      <h2 class="reviews-title">НАМ ДОВЕРЯЮТ:</h2>
+      <div class="partners">
+        <img src="/assets/img/robot.svg" width="70" alt="ООО Роботы" title="ООО «Роботы и Отчёты»" />
+        <img src="/assets/img/chart.svg" width="70" alt="Графики" title="АО «Графики Вверх»" />
+        <img src="/assets/img/clock.svg" width="70" alt="Дедлайны" title="ИП «Дедлайн»" />
+        <img src="/assets/img/brain.svg" width="70" alt="Интеллект" title="Corporate Intelligence Ltd" />
+        <img src="/assets/img/zap.svg" width="70" alt="Скорость" title="ТОО «Молния»" />
+        <img src="/assets/img/medal.svg" width="70" alt="Награды" title="Премия «Отчёт года»" />
+      </div>
+    </center>
+
+    <div class="discount-popup" id="popup">
+      ЭЙ! Псс!
+      <img src="/assets/img/gift.svg" width="30" alt="gift" />
+      <br />
+      Не уходи без подарка! <br />
+      Твоя персональная скидка сгорит через: <br />
+      <span id="timer">00:59</span>
+      <br />
+      <small>(нажми Alt+F4 чтобы забрать!)</small>
+    </div>
+
+    <marquee direction="right" scrollamount="40" bgcolor="red" class="bottom-marquee">
+      <img src="/assets/img/star.svg" width="150" alt="star" />
+      <span>КУПИ-КУПИ-КУПИ-КУПИ-КУПИ-КУПИ-КУПИ-КУПИ-КУПИ-КУПИ</span>
+      <img src="/assets/img/star.svg" width="150" alt="star" />
+    </marquee>
+
+    <footer>
+      <marquee scrollamount="10">
+        *Предложение действует только в твоей голове. ReportDailyBot не несет ответственности за
+        приступы эпилепсии, потерю зрения или желание переписать проект на jQuery. &copy; 1998-3000
+        ReportDailyBot Mega Turbo Ultimate Edition Platinum Status. Incorporated somewhere.
+      </marquee>
+      <br />
+      <img src="/assets/img/valid.svg" alt="Valid HTML 4.01!" class="valid-badge" />
+      (ШУТКА, КОНЕЧНО НЕ ВАЛИДНЫЙ)
+
+      <div class="legacy-counter"></div>
+
+      <div class="owner-panel">
+        <h4>ПАНЕЛЬ ВЛАДЕЛЬЦА</h4>
+        <p>Быстрые ссылки для админа бота (не показывать клиентам):</p>
+        <ul>
+          <li><a href="{{CORP_ORIGIN}}/owner/console-9d4c">Консоль владельца</a></li>
+          <li><a href="/docs/faq.html">Публичный FAQ</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script src="/assets/legacy.js"></script>
+    <script src="/assets/app.js"></script>
+  </body>
+</html>
