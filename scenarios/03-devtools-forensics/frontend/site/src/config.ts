@@ -1,4 +1,4 @@
-import { CORP, CORP_HOST } from './corp';
+import { CORP } from './corp';
 
 // Рантайм-конфиг лендинга: виджеты берут параметры отсюда, а не таскают их
 // друг другу через аргументы.
@@ -13,7 +13,7 @@ export function installConfig(): void {
     // Служебный блок переехал сюда из .env, «чтобы не пересобирать фронт на
     // каждое изменение адреса».
     internal: {
-      host: CORP_HOST,
+      host: CORP,
       metrics: CORP + '/telemetry/collect-4a2d',
       token: 'rdb_pat_9f31c7',
       queue: 'reports:daily',

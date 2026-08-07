@@ -55,7 +55,7 @@ export const LEAKS: Leak[] = [
   {
     id: 2,
     category: 'Скрытый элемент UI',
-    difficulty: 2,
+    difficulty: 1,
     marker: '/owner/console-9d4c',
     aliases: [],
     cause: 'блок .owner-panel со ссылкой на консоль владельца скрыт классом в styles.css',
@@ -158,7 +158,7 @@ export const LEAKS: Leak[] = [
   {
     id: 7,
     category: 'Runtime Config',
-    difficulty: 1,
+    difficulty: 2,
     marker: '/telemetry/collect-4a2d',
     aliases: ['rdb_pat_9f31c7'],
     cause: 'window.__CONFIG__ содержит блок internal с адресом телеметрии и токеном',
@@ -222,8 +222,8 @@ export const LEAKS: Leak[] = [
     category: 'HTTP-заголовки',
     difficulty: 2,
     marker: '/gateway/v1/bot-8e5f',
-    aliases: ['rdb-corp-node04', 'rdb-corp-node04.corp.test.kz'],
-    cause: 'публичное API отдаёт X-Upstream-Node и X-Upstream-Path балансировщика',
+    aliases: ['rdb-corp-node04'],
+    cause: 'публичное API отдаёт X-Upstream-Node, X-Upstream-Addr и X-Upstream-Path балансировщика',
     lesson:
       'Имя внутренней ноды и путь на шлюзе приехали в заголовках ответа. ' +
       'Заголовки требуют такой же гигиены, как тело: их видно ровно так же.',
@@ -306,7 +306,7 @@ export const LEAKS: Leak[] = [
   {
     id: 14,
     category: 'robots.txt',
-    difficulty: 1,
+    difficulty: 3,
     marker: '/ops/deploy-status-b73f',
     aliases: [],
     cause: 'в robots.txt закрыт от индексации внутренний адрес статуса выката',
@@ -326,7 +326,7 @@ export const LEAKS: Leak[] = [
   {
     id: 15,
     category: 'Ошибка в консоли',
-    difficulty: 2,
+    difficulty: 1,
     marker: '/report/queue-health-5a8d',
     aliases: [],
     cause:
@@ -357,8 +357,8 @@ export type MatchResult =
   | { kind: 'miss' };
 
 // Порядок проверок важен: сначала точное совпадение, потом «слишком общо», и
-// только потом «это хост». Иначе алиас rdb-corp-node04.corp.test.kz отбросило
-// бы как имя хоста, хотя это законный ответ на утечку 10.
+// только потом «это хост». Иначе адрес самого контура, названный вместо
+// конкретной ручки, попал бы не в ту ветку разбора.
 export function matchAnswer(raw: string): MatchResult {
   const value = normalize(raw);
   if (!value) return { kind: 'miss' };

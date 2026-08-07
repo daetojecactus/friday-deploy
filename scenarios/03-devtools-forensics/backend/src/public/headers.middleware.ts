@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { corpBrandHost } from '../internal/lib/origin';
+import { corpHost } from '../internal/lib/origin';
 
 // Заголовки и cookie публичного контура — то, что «ставит балансировщик».
 //
@@ -15,7 +15,11 @@ export function balancerHeaders(request: Request, response: Response, next: Next
 
   response.setHeader('X-Request-Id', `rdb-${Date.now().toString(36)}-${counter}`);
   response.setHeader('X-Cache', counter % 3 === 0 ? 'HIT' : 'MISS');
-  response.setHeader('X-Upstream-Node', `rdb-corp-node04.${corpBrandHost()}`);
+  // Имя ноды, её настоящий адрес и путь на шлюзе — три заголовка, из которых
+  // собирается рабочая ссылка. Адрес не косметический: найденный шлюз
+  // открывается и отвечает.
+  response.setHeader('X-Upstream-Node', 'rdb-corp-node04');
+  response.setHeader('X-Upstream-Addr', corpHost(request.headers.host));
   response.setHeader('X-Upstream-Path', '/gateway/v1/bot-8e5f');
 
   next();

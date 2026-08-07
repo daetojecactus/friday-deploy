@@ -2,7 +2,7 @@ import { Controller, Get, Header, NotFoundException, Param, Req, Res } from '@ne
 import type { Request, Response } from 'express';
 import { getBundle } from '../internal/site/build';
 import { PUBLIC_ASSETS } from '../internal/site/assets';
-import { corpBrandHost, corpOrigin } from '../internal/lib/origin';
+import { corpOrigin } from '../internal/lib/origin';
 
 // Отдача лендинга. Плейсхолдеры подставляются здесь, а не при сборке: адрес
 // внутреннего контура зависит от того, по какому Host открыли страницу.
@@ -10,11 +10,7 @@ import { corpBrandHost, corpOrigin } from '../internal/lib/origin';
 // чужой адрес.
 
 function substitute(source: string, request: Request): string {
-  return source
-    .split('{{CORP_ORIGIN}}')
-    .join(corpOrigin(request.headers.host))
-    .split('{{CORP_BRAND_HOST}}')
-    .join(corpBrandHost());
+  return source.split('{{CORP_ORIGIN}}').join(corpOrigin(request.headers.host));
 }
 
 @Controller()

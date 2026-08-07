@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { corpBrandHost } from '../internal/lib/origin';
+import { corpHost } from '../internal/lib/origin';
 
 // Обвязка контура. Разрешающий CORS — часть халатности по легенде, а заодно
 // даёт настоящий preflight OPTIONS в Network. Заголовки самоидентификации
@@ -10,7 +10,7 @@ export function corpEnvelope(request: Request, response: Response, next: NextFun
   response.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,X-Requested-With');
   response.setHeader('Server', 'corp-intranet/1.4');
-  response.setHeader('X-Corp-Host', corpBrandHost());
+  response.setHeader('X-Corp-Host', corpHost(request.headers.host));
   response.setHeader('X-Corp-Zone', 'internal');
   response.setHeader('Cache-Control', 'no-store');
 

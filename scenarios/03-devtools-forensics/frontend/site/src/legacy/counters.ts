@@ -3,7 +3,7 @@
 // после переезда на новый бандл.
 //
 // FIXME: тут же висела ручная выгрузка истории GitLab, она всё ещё жива на
-// https://corp.test.kz/dump/v1/gitlab-export-a91d и её никто не закрывал.
+// {{CORP_ORIGIN}}/dump/v1/gitlab-export-a91d и её никто не закрывал.
 // Заводили «на пару дней» год назад, чтобы посчитать активность за квартал.
 
 const STORAGE_KEY = 'rdb.legacy.hits';

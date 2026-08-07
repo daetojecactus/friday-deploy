@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { corpBrandHost } from '../internal/lib/origin';
+import { Controller, Get, Query, Req } from '@nestjs/common';
+import type { Request } from 'express';
+import { corpOrigin } from '../internal/lib/origin';
 
 // Публичное API лендинга. Конвертом { ok, data } намеренно не пользуется:
 // команда изучает эти ответы в Network, и они должны выглядеть как ответы
@@ -7,7 +8,7 @@ import { corpBrandHost } from '../internal/lib/origin';
 
 const REVIEWS = [
   {
-    author: 'Ярослав Старченков',
+    author: 'Джордан Белфорт',
     role: 'ex-джун',
     rating: 5,
     text: 'Этот бот изменил мою жизнь. Раньше я был джуном, а теперь я СЕО Гитлаба!',
@@ -61,14 +62,15 @@ export class ContentController {
   }
 
   @Get('reviews')
-  reviews() {
+  reviews(@Req() request: Request) {
     return {
       items: REVIEWS,
       total: REVIEWS.length,
       // Служебный блок ETL, который забыли вырезать из ответа: интерфейс его не
-      // показывает, но пользователю он приехал целиком.
+      // показывает, но пользователю он приехал целиком. Адрес настоящий —
+      // найденную строку можно открыть и увидеть витрину.
       _meta: {
-        source: `https://${corpBrandHost()}/db/v1/reviews-mirror-6b0d`,
+        source: `${corpOrigin(request.headers.host)}/db/v1/reviews-mirror-6b0d`,
         generatedBy: 'rdb-etl',
         rows: 412,
         syncedAt: new Date().toISOString(),

@@ -8,8 +8,10 @@ function env(key: string): string {
   return (process.env[key] ?? '').trim();
 }
 
-export function corpBrandHost(): string {
-  return env('CORP_BRAND_HOST') || 'corp.test.kz';
+// Хост контура без схемы: `10.216.214.139:7070`. Нужен там, где по формату
+// ожидается host:port, а не полный URL, — заголовки и служебные поля JSON.
+export function corpHost(host?: string): string {
+  return corpOrigin(host).replace(/^https?:\/\//, '');
 }
 
 // Хост, по которому открыта страница: заголовок Host без порта.

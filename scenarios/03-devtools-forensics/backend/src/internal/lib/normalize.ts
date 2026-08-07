@@ -27,7 +27,7 @@ export function normalize(raw: unknown): string {
 }
 
 // Похоже на голое имя хоста: точки есть, путь отсутствует. Нужно, чтобы
-// отличить «назвали corp.test.kz» от «назвали конкретный адрес».
+// отличить «назвали адрес контура целиком» от «назвали конкретную ручку».
 export function looksLikeBareHost(value: string): boolean {
   return value.length > 0 && !value.includes('/') && value.includes('.');
 }

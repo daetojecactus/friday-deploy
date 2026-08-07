@@ -1,7 +1,7 @@
 import { Controller, Get, Header, HttpCode, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { CORP_SERVER_ROOM } from '../internal/site/assets';
-import { corpBrandHost, publicOrigin } from '../internal/lib/origin';
+import { publicOrigin } from '../internal/lib/origin';
 
 // ВНУТРЕННИЙ КОНТУР ReportDailyBot. По легенде живёт за VPN, по факту отвечает
 // всем — иначе половина утечек не была бы наблюдаемой в DevTools.
@@ -129,7 +129,7 @@ ${rows}</table>
     return {
       status: 'ok',
       sticky: true,
-      node: `rdb-corp-node04.${corpBrandHost()}`,
+      node: 'rdb-corp-node04',
       sessions: 42,
       note: 'синхронизация админских сессий между нодами',
     };
@@ -247,7 +247,7 @@ ${rows}</table>
       rows: 412,
       moderated: 5,
       sample: [
-        { author: 'Ярослав Старченков', approved: true, moderator: 'w.wolf' },
+        { author: 'Джордан Белфорт', approved: true, moderator: 'w.wolf' },
         { author: 'Мия Уоллес', approved: true, moderator: 'w.wolf' },
         { author: 'аноним', approved: false, moderator: null, reason: 'мат' },
       ],
@@ -259,7 +259,7 @@ ${rows}</table>
   @Get('gateway/v1/bot-8e5f')
   gateway() {
     return {
-      node: `rdb-corp-node04.${corpBrandHost()}`,
+      node: 'rdb-corp-node04',
       routes: ['/telegram/webhook', '/report/setup-commands', '/report/send-recent'],
       upstreams: { gitlab: 'v4', telegram: 'bot-api', ai: ['openrouter', 'gemini', 'groq'] },
       health: 'ok',

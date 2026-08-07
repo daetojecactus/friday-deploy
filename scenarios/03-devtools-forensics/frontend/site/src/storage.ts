@@ -1,4 +1,4 @@
-import { CORP_HOST } from './corp';
+import { CORP } from './corp';
 
 // Всё, что лендинг помнит между визитами. Ключи с префиксом rdb.
 
@@ -44,7 +44,7 @@ export function installStorage(): void {
   // Диагностический слепок сессии: добавили, чтобы «посмотреть, почему рассылка
   // не доходит», и забыли убрать. Base64 тут не защита, а привычка.
   const diag = {
-    api: 'https://' + CORP_HOST + '/report/send-recent-b51e',
+    api: CORP + '/report/send-recent-b51e',
     token: 'tg_bot_5f31c7',
     ttl: 86400,
   };
